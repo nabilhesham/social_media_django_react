@@ -5,15 +5,21 @@ import ReactDOM from "react-dom";
 import Navbar from "./layout/Navbar";
 import Dashboard from "./posts/Dashboard";
 
+// store imports
+import { Provider } from "react-redux";
+import store from "../store";
+
 class App extends Component {
   render() {
     return (
-      <Fragment>
-        <Navbar />
-        <div className="container">
-          <Dashboard />
-        </div>
-      </Fragment>
+      <Provider store={store}>
+        <Fragment>
+          <Navbar />
+          <div className="container">
+            <Dashboard />
+          </div>
+        </Fragment>
+      </Provider>
     );
   }
 }
