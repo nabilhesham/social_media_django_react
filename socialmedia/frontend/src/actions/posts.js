@@ -1,7 +1,14 @@
 import axios from "axios";
 
 //  actions types import
-import { GET_POSTS, DELETE_POST, ADD_POST } from "./types";
+import {
+  GET_POSTS,
+  DELETE_POST,
+  ADD_POST,
+  GET_ERRORS,
+  CREATE_MESSAGE
+} from "./types";
+import { createMessage } from "./messages";
 
 // GET POSTS
 export const getPosts = () => dispatch => {
@@ -25,8 +32,18 @@ export const deletePost = id => dispatch => {
         type: DELETE_POST,
         payload: id
       });
+      dispatch(createMessage({ deletePost: "Post Deleted" }));
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const errors = {
+        msg: err.response.data,
+        status: err.response.status
+      };
+      dispatch({
+        type: GET_ERRORS,
+        payload: errors
+      });
+    });
 };
 
 // ADD POST
@@ -38,6 +55,16 @@ export const addPost = post => dispatch => {
         type: ADD_POST,
         payload: res.data
       });
+      dispatch(createMessage({ addPost: "Post Added" }));
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const errors = {
+        msg: err.response.data,
+        status: err.response.status
+      };
+      dispatch({
+        type: GET_ERRORS,
+        payload: errors
+      });
+    });
 };
