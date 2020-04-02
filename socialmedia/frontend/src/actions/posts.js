@@ -8,7 +8,7 @@ import {
   GET_ERRORS,
   CREATE_MESSAGE
 } from "./types";
-import { createMessage } from "./messages";
+import { createMessage, returnErrors } from "./messages";
 
 // GET POSTS
 export const getPosts = () => dispatch => {
@@ -20,7 +20,9 @@ export const getPosts = () => dispatch => {
         payload: res.data
       });
     })
-    .catch(err => console.log(err));
+    .catch(err =>
+      dispatch(returnErrors(err.response.data, err.response.status))
+    );
 };
 
 // DELETE POSTS
@@ -57,14 +59,17 @@ export const addPost = post => dispatch => {
       });
       dispatch(createMessage({ addPost: "Post Added" }));
     })
-    .catch(err => {
-      const errors = {
-        msg: err.response.data,
-        status: err.response.status
-      };
-      dispatch({
-        type: GET_ERRORS,
-        payload: errors
-      });
-    });
+    .catch(err =>
+      //   {
+      //   const errors = {
+      //     msg: err.response.data,
+      //     status: err.response.status
+      //   };
+      //   dispatch({
+      //     type: GET_ERRORS,
+      //     payload: errors
+      //   });
+      // }
+      dispatch(returnErrors(err.response.data, err.response.status))
+    );
 };
