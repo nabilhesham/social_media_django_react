@@ -5,9 +5,11 @@ import AddPost from "./AddPost";
 export default function Dashboard() {
   return (
     <Fragment>
-      <AddPost />
-      <hr />
-      <Posts />
+      <div className="dashboard">
+        <AddPost />
+        <hr />
+        <Posts />
+      </div>
     </Fragment>
   );
 }
