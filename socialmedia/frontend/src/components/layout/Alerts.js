@@ -10,7 +10,7 @@ export class Alerts extends Component {
 
   static propTypes = {
     error: PropTypes.object.isRequired,
-    message: PropTypes.object.isRequired
+    message: PropTypes.object.isRequired,
   };
 
   componentDidUpdate(prevProps) {
@@ -24,6 +24,12 @@ export class Alerts extends Component {
       if (error.msg.body) {
         alert.error(`Post: ${error.msg.body}`);
       }
+      if (error.msg.non_field_errors) {
+        alert.error(error.msg.non_field_errors);
+      }
+      if (error.msg.username) {
+        alert.error(error.msg.username);
+      }
     }
 
     // Messages Conditions
@@ -34,6 +40,9 @@ export class Alerts extends Component {
       if (message.deletePost) {
         alert.success(message.deletePost);
       }
+      if (message.PasswordsNotMatch) {
+        alert.error(message.PasswordsNotMatch);
+      }
     }
   }
 
@@ -42,9 +51,9 @@ export class Alerts extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   error: state.errors,
-  message: state.messages
+  message: state.messages,
 });
 
 export default connect(mapStateToProps)(withAlert()(Alerts));

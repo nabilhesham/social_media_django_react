@@ -1,8 +1,53 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { logout } from "../../actions/auth";
 
 export class Navbar extends Component {
+  static propTypes = {
+    auth: PropTypes.object.isRequired
+  };
+
   render() {
+    const { isAuthenticated, user } = this.props.auth;
+
+    // when User is logged-in
+    const authLinks = (
+      <ul className="navbar-nav ml-auto">
+        <span
+          className="navbar-text mr-3"
+          style={{ textTransform: "capitalize" }}
+        >
+          <strong>{user ? `Welcome ${user.username}!` : ""}</strong>
+        </span>
+        <li className="nav-item">
+          <button
+            className="nav-link btn btn-outline-warning btn-sm text-light"
+            onClick={this.props.logout}
+          >
+            Logout
+          </button>
+        </li>
+      </ul>
+    );
+
+    // when User is logged-out
+    const guestLinks = (
+      <ul className="navbar-nav ml-auto">
+        <li className="nav-item">
+          <Link to="/register" className="nav-link">
+            Register
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link to="/login" className="nav-link">
+            Login
+          </Link>
+        </li>
+      </ul>
+    );
+
     return (
       <nav className="navbar navbar-expand-sm navbar-dark bg-primary">
         <div className="container">
@@ -21,18 +66,7 @@ export class Navbar extends Component {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarColor01">
-            <ul className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to="/register" className="nav-link">
-                  Register
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/login" className="nav-link">
-                  Login
-                </Link>
-              </li>
-            </ul>
+            {isAuthenticated ? authLinks : guestLinks}
           </div>
         </div>
       </nav>
@@ -40,4 +74,8 @@ export class Navbar extends Component {
   }
 }
 
-export default Navbar;
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps, { logout })(Navbar);
