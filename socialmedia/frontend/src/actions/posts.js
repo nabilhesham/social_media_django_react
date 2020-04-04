@@ -6,60 +6,61 @@ import {
   DELETE_POST,
   ADD_POST,
   GET_ERRORS,
-  CREATE_MESSAGE
+  CREATE_MESSAGE,
 } from "./types";
 import { createMessage, returnErrors } from "./messages";
+import { tokenConfig } from "./auth";
 
 // GET POSTS
-export const getPosts = () => dispatch => {
+export const getPosts = () => (dispatch, getState) => {
   axios
-    .get("/api/posts/")
-    .then(res => {
+    .get("/api/posts/", tokenConfig(getState))
+    .then((res) => {
       dispatch({
         type: GET_POSTS,
-        payload: res.data
+        payload: res.data,
       });
     })
-    .catch(err =>
+    .catch((err) =>
       dispatch(returnErrors(err.response.data, err.response.status))
     );
 };
 
 // DELETE POSTS
-export const deletePost = id => dispatch => {
+export const deletePost = (id) => (dispatch, getState) => {
   axios
-    .delete(`/api/posts/${id}/`)
-    .then(res => {
+    .delete(`/api/posts/${id}/`, tokenConfig(getState))
+    .then((res) => {
       dispatch({
         type: DELETE_POST,
-        payload: id
+        payload: id,
       });
       dispatch(createMessage({ deletePost: "Post Deleted" }));
     })
-    .catch(err => {
+    .catch((err) => {
       const errors = {
         msg: err.response.data,
-        status: err.response.status
+        status: err.response.status,
       };
       dispatch({
         type: GET_ERRORS,
-        payload: errors
+        payload: errors,
       });
     });
 };
 
-// ADD POST
-export const addPost = post => dispatch => {
+// ADD Post
+export const addPost = (post) => (dispatch, getState) => {
   axios
-    .post("/api/posts/", post)
-    .then(res => {
+    .post("/api/posts/", post, tokenConfig(getState))
+    .then((res) => {
+      dispatch(createMessage({ addPost: "Post Added" }));
       dispatch({
         type: ADD_POST,
-        payload: res.data
+        payload: res.data,
       });
-      dispatch(createMessage({ addPost: "Post Added" }));
     })
-    .catch(err =>
+    .catch((err) =>
       //   {
       //   const errors = {
       //     msg: err.response.data,
